@@ -1,5 +1,6 @@
 ﻿using ChromebookBooking.Api.Domain.Common.Constants;
 using ChromebookBooking.Api.Domain.Common.Enums;
+using ChromebookBooking.Api.Domain.Common.Exceptions;
 using ChromebookBooking.Api.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,6 +22,9 @@ public sealed class User
 
     [Required]
     public bool IsActive { get; private set; }
+
+    private readonly List<Section> _sections = [];
+    public IReadOnlyCollection<Section> Sections => _sections.AsReadOnly();
 
     private User() { }
 
@@ -47,6 +51,23 @@ public sealed class User
             UserRole.Admin => AppModules.All,
             _ => []
         };
+    }
+
+    public bool IsTeacher => Role == UserRole.Teacher;
+    public bool IsAdmin => Role == UserRole.Admin;
+
+    public void UpdateSections(IEnumerable<Section> sections)
+    {
+        if (!IsTeacher)
+            throw new DomainException("Apenas usuários com o perfil de Professor podem ser vinculados a turmas.");
+
+        ClearSections();
+        _sections.AddRange(sections);
+    }
+
+    public void ClearSections()
+    {
+        _sections.Clear();
     }
 
 }

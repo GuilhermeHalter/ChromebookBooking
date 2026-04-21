@@ -1,8 +1,11 @@
+import { type Section } from './section'
+
 export interface User {
   id: number
   email: string
   role: UserRole
   isActive: boolean
+  Sections: Section[]
 }
 
 export interface LoggedUser {

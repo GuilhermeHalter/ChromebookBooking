@@ -14,6 +14,9 @@ public sealed class Section
     [StringLength(100)]
     public string Name { get; private set; } = string.Empty;
 
+    private readonly List<User> _users = [];
+    public IReadOnlyCollection<User> Users => _users.AsReadOnly();
+
     private Section() { }
 
     public Section(string name)

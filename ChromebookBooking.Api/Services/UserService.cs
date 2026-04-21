@@ -19,6 +19,7 @@ public sealed class UserService : IUserService
     public async Task<IReadOnlyList<UserResponse>> GetAllUsersAsync()
     {
         return await _context.Users
+            .Include(u => u.Sections)
             .AsNoTracking()
             .Select(u => ToResponse(u))
             .ToListAsync();
@@ -27,6 +28,7 @@ public sealed class UserService : IUserService
     public async Task<UserResponse> GetUserByIdAsync(int id)
     {
         var user = await _context.Users
+            .Include(u => u.Sections)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -48,21 +50,74 @@ public sealed class UserService : IUserService
         }
 
         var user = new User(email, request.Role);
+
+        if (user.IsTeacher && request.SectionIds is not null && request.SectionIds.Any())
+        {
+            var sections = await _context.Sections
+                .Where(s => request.SectionIds.Contains(s.Id))
+                .ToListAsync();
+
+            user.UpdateSections(sections);
+        }
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
+
         return ToResponse(user);
+    }
+
+    public async Task UpdateUserAsync(int id, UpdateUserRequest request)
+    {
+        var user = await _context.Users
+            .Include(u => u.Sections)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user is null)
+        {
+            throw new KeyNotFoundException($"Usuário com ID {id} não encontrado.");
+        }
+
+        if (user.Role != request.Role)
+        {
+            user.ChangeRole(request.Role);
+        }
+
+        if (user.IsTeacher)
+        {
+            var sectionIds = request.SectionIds ?? Enumerable.Empty<int>();
+
+            var sections = await _context.Sections
+                .Where(s => sectionIds.Contains(s.Id))
+                .ToListAsync();
+
+            user.UpdateSections(sections);
+        }
+        else
+        {
+            user.ClearSections();
+        }
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task ActivateUserAsync(int id)
     {
-        User user = await GetUserAsync(id);
+        var user = await _context.Users.FindAsync(id);
+        if (user is null)
+        {
+            throw new KeyNotFoundException($"Usuário com ID {id} não encontrado.");
+        }
         user.Activate();
         await _context.SaveChangesAsync();
     }
 
     public async Task DeactivateUserAsync(int id)
     {
-        User user = await GetUserAsync(id);
+        var user = await _context.Users.FindAsync(id);
+        if (user is null)
+        {
+            throw new KeyNotFoundException($"Usuário com ID {id} não encontrado.");
+        }
         user.Deactivate();
         await _context.SaveChangesAsync();
     }
@@ -72,6 +127,31 @@ public sealed class UserService : IUserService
         User loggedUser = await ValidateAccessAsync(authUserId, email);
         IReadOnlyList<string> modules = loggedUser.GetAccessibleModules();
         return new LoggedUserResponse(loggedUser.Id, loggedUser.Email.Value, loggedUser.Role, modules);
+    }
+
+    public async Task<IReadOnlyList<SectionResponse>> GetUserSectionsAsync(int userId)
+    {
+        var user = await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user is null)
+        {
+            throw new KeyNotFoundException($"Usuário com ID {userId} não encontrado.");
+        }
+
+        if (!user.IsTeacher)
+        {
+            throw new InvalidOperationException("Apenas usuários com perfil de Professor possuem turmas vinculadas.");
+        }
+
+        var sections = await _context.Sections
+            .AsNoTracking()
+            .Where(s => s.Users.Any(u => u.Id == userId))
+            .Select(s => new SectionResponse(s.Id, s.Name))
+            .ToListAsync();
+
+        return sections;
     }
 
     private async Task<User> ValidateAccessAsync(Guid authUserId, string email)
@@ -92,18 +172,12 @@ public sealed class UserService : IUserService
         return user;
     }
 
-    private async Task<User> GetUserAsync(int id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user is null)
-        {
-            throw new KeyNotFoundException($"Usuário com ID {id} não encontrado.");
-        }
-        return user;
-    }
-
     private static UserResponse ToResponse(User user)
     {
-        return new UserResponse(user.Id, user.Email.Value, user.Role, user.IsActive);
+        var sections = user.Sections
+            .Select(s => new SectionResponse(s.Id, s.Name))
+            .ToList();
+
+        return new UserResponse(user.Id, user.Email.Value, user.Role, user.IsActive, sections);
     }
 }

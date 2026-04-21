@@ -42,6 +42,14 @@ public sealed class UsersController : ControllerBase
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
 
+    [HttpPut]
+    [Authorize(Roles = nameof(UserRole.Admin))]
+    public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
+    {
+        await _service.UpdateUserAsync(id, request);
+        return NoContent();
+    }
+
     [HttpPatch("{id}/activate")]
     [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> ActivateUser(int id)
@@ -64,6 +72,14 @@ public sealed class UsersController : ControllerBase
     {
         var loggedUser = await _service.GetLoggedUserAsync(User.GetUserId(), User.GetUserEmail());
         return Ok(loggedUser);
+    }
+
+    [HttpGet("{id}/sections")]
+    [Authorize]
+    public async Task<IActionResult> GetTeacherSections(int id)
+    {
+        var sections = await _service.GetUserSectionsAsync(id);
+        return Ok(sections);
     }
 
 }
