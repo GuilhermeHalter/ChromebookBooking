@@ -15,7 +15,6 @@ const app = createApp(App)
 
 app.use(PrimeVue, { theme: { preset: Aura } })
 app.use(pinia)
-app.use(router)
 
 const authStore = useAuthStore()
 await authStore.init()
@@ -28,5 +27,8 @@ app.provide('serviceFactory', serviceFactory)
 
 const userService = serviceFactory.createUserService()
 await authStore.getLoggedUser(userService)
+
+app.use(router)
+await router.isReady()
 
 app.mount('#app')

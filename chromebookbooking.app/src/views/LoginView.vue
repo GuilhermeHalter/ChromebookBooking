@@ -7,7 +7,6 @@
 
 <template>
   <BaseButton v-if="!authStore.user" @click="authStore.loginWithGoogle" label="Entrar com Google" />
-  <BaseButton v-else @click="authStore.logout" label="Sair" />
 </template>
 
 <style scoped>

@@ -4,6 +4,7 @@ import type { Session, User } from '@supabase/supabase-js'
 import AuthService from '../services/AuthService'
 import UserService from '../services/UserService'
 import type { LoggedUser } from '../types/user'
+import { router } from '../router'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -35,6 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     session.value = null
     profile.value = null
+    router.push({ name: 'Login' })
   }
 
   function getToken(): string | null {
@@ -47,7 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
       profile.value = await userService.getLoggedUser()
     } catch (error) {
       console.error('Error validating access:', error)
-      await logout()
+      profile.value = null
     }
   }
 

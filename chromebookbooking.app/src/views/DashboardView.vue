@@ -3,20 +3,23 @@
   import BaseButton from '../components/ui/BaseButton.vue'
   import BaseInput from '../components/ui/BaseInput.vue'
   import InputText from 'primevue/inputtext'
-  import { useCabinetStore } from '../stores/cabinet';
+  import { useCabinetStore } from '../stores/cabinet'
+  import { useAuthStore } from '../stores/auth'
 
   const cabinet = ref('')
-  const store = useCabinetStore()
+  const cabinetStore = useCabinetStore()
+  const authStore = useAuthStore()
 
   onMounted(() => {
-    store.getAllCabinets()
+    cabinetStore.getAllCabinets()
   })
 </script>
 
 <template>
+  <BaseButton v-if="authStore.user" @click="authStore.logout" label="Sair" />
   <BaseInput type="text" v-model="cabinet" />
   <BaseButton label="Submit" />
-  {{ store.cabinets }}
+  {{ cabinetStore.cabinets }}
 </template>
 
 <style scoped>
