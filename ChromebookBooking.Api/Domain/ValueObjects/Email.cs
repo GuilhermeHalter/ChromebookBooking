@@ -8,7 +8,7 @@ public sealed class Email
 
     private static readonly string AllowedDomain = "@edu.joinville.sc.gov.br";
 
-    private const bool EnableDomainValidation = false;
+    private const bool EnableDomainValidation = true;
 
     private Email() { }
 
