@@ -9,7 +9,7 @@ public class UserTests
 {
     private static Email CreateValidEmail()
     {
-        return Email.Create("teste@escola.com");
+        return Email.Create("teste@edu.joinville.sc.gov.br");
     }
 
     [Fact]
