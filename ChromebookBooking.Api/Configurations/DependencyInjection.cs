@@ -1,4 +1,5 @@
-﻿using ChromebookBooking.Api.Infrastructure;
+﻿using ChromebookBooking.Api.Extensions;
+using ChromebookBooking.Api.Infrastructure;
 using ChromebookBooking.Api.Interfaces;
 using ChromebookBooking.Api.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ChromebookBooking.Api.Extensions;
+namespace ChromebookBooking.Api.Configurations;
 
 public static class DependencyInjection
 {
@@ -93,4 +94,12 @@ public static class DependencyInjection
 
         return services;
     }
+
+    public static IServiceCollection AddSecuritySettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<SecuritySettings>(configuration.GetSection("AppSettings"));
+
+        return services;
+    }
+
 }

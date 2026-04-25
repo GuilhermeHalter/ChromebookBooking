@@ -1,20 +1,24 @@
-﻿using ChromebookBooking.Api.Domain.Entities;
+﻿using ChromebookBooking.Api.Configurations;
+using ChromebookBooking.Api.Domain.Entities;
 using ChromebookBooking.Api.Domain.Services;
 using ChromebookBooking.Api.Domain.ValueObjects;
 using ChromebookBooking.Api.DTOs;
 using ChromebookBooking.Api.Infrastructure;
 using ChromebookBooking.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ChromebookBooking.Api.Services;
 
 public sealed class UserService : IUserService
 {
     private readonly AppDbContext _context;
+    private readonly SecuritySettings _securitySettings;
 
-    public UserService(AppDbContext context)
+    public UserService(AppDbContext context, IOptions<SecuritySettings> settings)
     {
         _context = context;
+        _securitySettings = settings.Value;
     }
 
     public async Task<IReadOnlyList<UserResponse>> GetAllUsersAsync()
@@ -45,8 +49,7 @@ public sealed class UserService : IUserService
     {
         var email = Email.Create(request.Email);
 
-        string[] bypassEmails = { "joaovitorbagatoli07@gmail.com" };
-        EmailAccessPolicy.EnsureIsAllowed(email, bypassEmails);
+        EmailAccessPolicy.EnsureIsAllowed(email, _securitySettings.AllowedBypassEmails);
 
         bool emailExists = await _context.Users.AnyAsync(u => u.Email == email);
         if (emailExists)

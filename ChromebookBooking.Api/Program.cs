@@ -1,4 +1,4 @@
-using ChromebookBooking.Api.Extensions;
+using ChromebookBooking.Api.Configurations;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +18,7 @@ builder.Services.AddApiServices();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddExceptionHandler();
 builder.Services.AddCorsPolicy(builder.Configuration);
+builder.Services.AddSecuritySettings(builder.Configuration);
 
 var app = builder.Build();
 
