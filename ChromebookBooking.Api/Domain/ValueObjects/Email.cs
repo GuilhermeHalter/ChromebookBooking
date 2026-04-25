@@ -6,10 +6,6 @@ public sealed class Email
 {
     public string Value { get; private set; }
 
-    private static readonly string AllowedDomain = "@edu.joinville.sc.gov.br";
-
-    private const bool EnableDomainValidation = true;
-
     private Email() { }
 
     private Email(string value)
@@ -24,9 +20,6 @@ public sealed class Email
 
         if (!IsValidEmail(email))
             throw new DomainException("Email inválido.");
-
-        if (EnableDomainValidation && !email.EndsWith(AllowedDomain, StringComparison.OrdinalIgnoreCase))
-            throw new DomainException($"Email deve ser do domínio '{AllowedDomain}'.");
 
         return new Email(email);
     }
