@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChromebookBooking.Api;
+namespace ChromebookBooking.Api.Configurations;
 
 public sealed class ExceptionHandler : IExceptionHandler
 {

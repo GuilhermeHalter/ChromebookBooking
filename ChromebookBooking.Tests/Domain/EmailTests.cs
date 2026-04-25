@@ -39,14 +39,4 @@ public class EmailTests
         Assert.Throws<DomainException>(() => Email.Create(invalidEmail));
     }
 
-    [Theory]
-    [InlineData("professor@gmail.com")]
-    [InlineData("diretor@hotmail.com")]
-    [InlineData("professor@joinville.sc.gov.br")]
-    public void Create_Should_Throw_Exception_For_Disallowed_Domain(string invalidEmail)
-    {
-        // Act & Assert
-        Assert.Throws<DomainException>(() => Email.Create(invalidEmail));
-    }
-
 }

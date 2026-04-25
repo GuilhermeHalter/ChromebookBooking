@@ -39,7 +39,13 @@ public sealed class User
 
     public void Activate() => IsActive = true;
 
-    public void ChangeRole(UserRole newRole) => Role = newRole;
+    public void ChangeRole(UserRole newRole)
+    {
+        Role = newRole;
+
+        if (!IsTeacher)
+            ClearSections();
+    }
 
     public void LinkSupabaseAccount(Guid authUserId) => AuthUserId = authUserId;
 
@@ -65,7 +71,7 @@ public sealed class User
         _sections.AddRange(sections);
     }
 
-    public void ClearSections()
+    private void ClearSections()
     {
         _sections.Clear();
     }
