@@ -22,6 +22,8 @@ builder.Services.AddSecuritySettings(builder.Configuration);
 
 var app = builder.Build();
 
+app.ApplyMigrations();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
