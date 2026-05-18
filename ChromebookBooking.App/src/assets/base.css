@@ -1,5 +1,10 @@
 @import 'font.css';
 
-body {
-  font-family: 'Inter', sans-serif;
+:root {
+  --background: #f8fafc;
+
+  --primary: #003866;
+  --secondary: #ffffff;
+
+  --muted: ##727c8c;
 }
