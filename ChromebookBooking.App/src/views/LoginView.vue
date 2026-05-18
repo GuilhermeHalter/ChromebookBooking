@@ -79,7 +79,7 @@
 
   .instruction-text {
       font-size: 0.875rem;
-      /*color: var(--muted);*/
+      color: var(--muted);
       margin-bottom: 2rem;
   }
 
