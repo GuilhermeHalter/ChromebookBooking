@@ -18,7 +18,7 @@
               <h2 class="welcome-title">Bem-Vindo</h2>
               <p class="instruction-text">Faça login com sua conta Google institucional para acessar o sistema</p>
               <Button class="google-btn" outlined @click="authStore.loginWithGoogle">
-                <img src="/public/google-logo.svg"
+                <img src="../assets/images/google-logo.svg"
                      alt="Logo do Google"
                      class="google-icon" />
                 <span class="btn-text">Entrar com Google</span>
