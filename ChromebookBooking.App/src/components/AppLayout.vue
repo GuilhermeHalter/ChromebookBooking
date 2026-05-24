@@ -1,17 +1,34 @@
 <script setup lang="ts">
+  import { computed } from 'vue'
   import { useAuthStore } from '../stores/auth'
   import AppSidebar from './AppSidebar.vue'
 
   const authStore = useAuthStore()
 
-  const isAdmin = authStore.profile?.role === 'Admin'
+  const isAdmin = computed(() => authStore.profile?.role === 'Admin')
 </script>
 
 <template>
-  <AppSidebar v-if="isAdmin" />
-  <RouterView></RouterView>
+  <div class="layout-wrapper">
+    <AppSidebar v-if="isAdmin" />
+    <div class="main-content">
+      <RouterView></RouterView>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+  .layout-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+  }
 
+  .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background-color: var(--p-surface-50);
+  }
 </style>

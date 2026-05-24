@@ -1,23 +1,137 @@
 <script setup lang="ts">
-  import { useAuthStore } from "../stores/auth"
+  import { computed, ref } from 'vue'
+  import { useAuthStore } from '../stores/auth'
+  import Button from 'primevue/button'
 
   const authStore = useAuthStore()
   const modules = authStore.profile?.modules || []
+
+  const isCollapsed = ref(false)
+
+  function toggleCollapse() {
+    isCollapsed.value = !isCollapsed.value
+  }
+
+  const moduleConfig: Record<string, { label: string, icon: string }> = {
+    Dashboard: { label: 'Dashboard', icon: 'pi pi-home' },
+    Schedule: { label: 'Agenda', icon: 'pi pi-calendar' },
+    History: { label: 'History', icon: 'pi pi-history' },
+    Settings: { label: 'Configurações', icon: 'pi pi-cog' }
+  }
+
+  const menuItems = computed(() => {
+    return modules.map(module => {
+      const config = moduleConfig[module]
+      return {
+        route: module,
+        label: config?.label,
+        icon: config?.icon
+      }
+    })
+  })
 </script>
 
 <template>
-  <aside>
-    <nav>
-      <RouterLink
-        v-for="module in modules"
-        :key="module"
-        :to="{ name: module }">
-        {{ module }}
+  <aside class="app-sidebar" :class="{ 'sidebar-collapsed': isCollapsed }">
+    <div class="sidebar-header">
+      <i class="pi pi-desktop"></i>
+      <span v-show="!isCollapsed">Reservas Chromebooks</span>
+    </div>
+    <nav class="sidebar-content">
+      <RouterLink v-for="item in menuItems"
+                  :key="item.route"
+                  :to="{ name: item.route }"
+                  class="nav-link"
+                  active-class="active-link"
+                  :title="isCollapsed ? item.label : undefined">
+        <i :class="item.icon" class="nav-icon"></i>
+        <span v-show="!isCollapsed" class="nav-label">{{ item.label }}</span>
       </RouterLink>
     </nav>
+    <div class="sidebar-footer">
+      <Button :icon="isCollapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-left'"
+              severity="secondary"
+              text
+              rounded
+              aria-label="Toggle Sidebar"
+              @click="toggleCollapse">
+      </Button>
+    </div>
   </aside>
 </template>
 
 <style scoped>
+  .app-sidebar {
+      width: 260px;
+      background-color: var(--p-surface-0);
+      border-right: 1px solid var(--p-surface-200);
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+  }
 
+    .app-sidebar.sidebar-collapsed {
+        width: 80px;
+    }
+
+  .sidebar-header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--p-surface-100);
+      margin-bottom: 1rem;
+      overflow: hidden;
+  }
+
+  .sidebar-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0 0.75rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+
+  .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.2s, color 0.2s;
+      white-space: nowrap;
+      outline: none;
+  }
+
+    .nav-link:hover {
+        background-color: var(--p-surface-100);
+    }
+
+  .active-link {
+      background-color: var(--p-primary-50);
+      color: var(--p-primary-600);
+      font-weight: 600;
+  }
+
+  .nav-icon {
+      font-size: 1.25rem;
+      min-width: 24px;
+      display: flex;
+      justify-content: center;
+  }
+
+  .nav-label {
+      margin-left: 0.75rem;
+      transition: opacity 0.2s;
+  }
+
+  .sidebar-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--p-surface-100);
+      display: flex;
+      justify-content: center;
+  }
 </style>
