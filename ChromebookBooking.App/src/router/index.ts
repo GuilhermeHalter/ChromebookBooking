@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import AppLayout from '../components/AppLayout.vue'
+import { type UserModule } from '../types/user'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -13,33 +14,33 @@ const routes: RouteRecordRaw[] = [
         name: 'Redirect',
         redirect: () => {
           const authStore = useAuthStore()
-          const role = authStore.profile?.role
-          return role === 'Admin' ? { name: 'Dashboard' } : { name: 'Schedule' }
+          const accessibleModules = authStore.profile?.modules || []
+          if (accessibleModules.length === 0) return { name: 'AccessDenied' }
+          if (accessibleModules.includes('Dashboard')) {
+            return { name: 'Dashboard' }
+          }
+          return { name: 'Schedule' }
         }
       },
       {
         path: 'dashboard',
         name: 'Dashboard',
-        component: () => import('../views/DashboardView.vue'),
-        meta: { roles: ['Admin'] }
+        component: () => import('../views/DashboardView.vue')
       },
       {
         path: 'schedule',
         name: 'Schedule',
-        component: () => import('../views/ScheduleView.vue'),
-        meta: { roles: ['Admin', 'Teacher'] }
+        component: () => import('../views/ScheduleView.vue')
       },
       {
         path: 'history',
         name: 'History',
-        component: () => import('../views/HistoryView.vue'),
-        meta: { roles: ['Admin'] }
+        component: () => import('../views/HistoryView.vue')
       },
       {
         path: 'settings',
         name: 'Settings',
-        component: () => import('../views/SettingsView.vue'),
-        meta: { roles: ['Admin'] }
+        component: () => import('../views/SettingsView.vue')
       }
     ]
   },
@@ -65,7 +66,7 @@ router.beforeEach((to, _from, next) => {
 
   const isAuthenticated = !!authStore.user
   const isAuthorized = !!authStore.profile
-  const userRole = authStore.profile?.role
+  const accessibleModules = authStore.profile?.modules || []
 
   const requiresAuth = to.meta.requiresAuth || to.matched.some(record => record.meta.requiresAuth)
 
@@ -76,16 +77,17 @@ router.beforeEach((to, _from, next) => {
     if (isAuthenticated && !isAuthorized) {
       return next({ name: 'AccessDenied' })
     }
-    const routeRoles = to.meta.roles as string[] | undefined
-    if (routeRoles && (!userRole || !routeRoles.includes(userRole))) {
+    const routeName = to.name as string
+    if (routeName !== 'Redirect' && !accessibleModules.includes(routeName as UserModule)) {
       return next({ name: 'AccessDenied' })
     }
     return next()
   }
 
   if (to.name === 'Login' && isAuthenticated) {
-    if (isAuthorized) {
-      return next({ name: userRole === 'Admin' ? 'Dashboard' : 'Schedule' })
+    if (isAuthorized && accessibleModules.length > 0) {
+      const targetRoute = accessibleModules.includes('Dashboard') ? 'Dashboard' : 'Schedule'
+      return next({ name: targetRoute })
     } else {
       return next({ name: 'AccessDenied' })
     }
