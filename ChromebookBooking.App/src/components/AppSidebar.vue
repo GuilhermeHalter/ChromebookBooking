@@ -35,7 +35,7 @@
   <aside class="app-sidebar" :class="{ 'sidebar-collapsed': isCollapsed }">
     <div class="sidebar-header">
       <i class="pi pi-desktop header-icon" title="Reservas Chromebooks"></i>
-      <span v-show="!isCollapsed" class="header-label font-base">Reservas Chromebooks</span>
+      <span v-show="!isCollapsed" class="header-label font-base">Reserva de Chromebooks</span>
     </div>
     <nav class="sidebar-content">
       <RouterLink v-for="item in menuItems"
@@ -55,6 +55,9 @@
               text
               rounded
               aria-label="Toggle Sidebar"
+              :pt="{
+                icon: { style: 'font-size: 0.75rem;' }
+              }"
               @click="toggleCollapse">
       </Button>
     </div>
