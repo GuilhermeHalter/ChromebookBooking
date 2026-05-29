@@ -35,7 +35,7 @@
   <aside class="app-sidebar" :class="{ 'sidebar-collapsed': isCollapsed }">
     <div class="sidebar-header">
       <i class="pi pi-desktop header-icon" title="Reservas Chromebooks"></i>
-      <span v-show="!isCollapsed" class="header-label font-base">Reserva de Chromebooks</span>
+      <span v-show="!isCollapsed" class="header-label">Reserva de Chromebooks</span>
     </div>
     <nav class="sidebar-content">
       <RouterLink v-for="item in menuItems"
@@ -46,7 +46,7 @@
                   active-class="active-link"
                   :title="isCollapsed ? item.label : undefined">
         <i :class="item.icon" class="nav-icon"></i>
-        <span v-show="!isCollapsed" class="nav-label font-base">{{ item.label }}</span>
+        <span v-show="!isCollapsed" class="nav-label">{{ item.label }}</span>
       </RouterLink>
     </nav>
     <div class="sidebar-footer">
@@ -94,6 +94,7 @@
   }
 
   .header-label {
+      font-size: var(--font-base);
       font-weight: 500;
   }
 
@@ -144,6 +145,7 @@
   }
 
   .nav-label {
+      font-size: var(--font-base);
       transition: opacity 0.2s;
   }
 

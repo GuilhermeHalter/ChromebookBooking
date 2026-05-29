@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { useAuthStore } from '../stores/auth'
   import AppSidebar from './AppSidebar.vue'
+  import AppAvatar from './AppAvatar.vue'
 
   const authStore = useAuthStore()
 
@@ -12,6 +13,7 @@
   <div class="layout-wrapper">
     <AppSidebar v-if="isAdmin" />
     <div class="main-content">
+      <AppAvatar />
       <RouterView></RouterView>
     </div>
   </div>
