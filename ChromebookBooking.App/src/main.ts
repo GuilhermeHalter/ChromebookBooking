@@ -1,9 +1,9 @@
-import './assets/main.css'
+import './assets/styles/main.css'
 import 'primeicons/primeicons.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
+import { preset } from './theme/preset'
 import AxiosHttpClient from './http/AxiosHttpClient'
 import ServiceFactory from './services/ServiceFactory'
 import { createPinia } from 'pinia'
@@ -13,7 +13,7 @@ import { useAuthStore } from './stores/auth'
 const pinia = createPinia()
 const app = createApp(App)
 
-app.use(PrimeVue, { theme: { preset: Aura } })
+app.use(PrimeVue, { theme: { preset } })
 app.use(pinia)
 
 const authStore = useAuthStore()

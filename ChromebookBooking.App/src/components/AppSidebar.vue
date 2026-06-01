@@ -15,7 +15,7 @@
   const moduleConfig: Record<string, { label: string, icon: string }> = {
     Dashboard: { label: 'Dashboard', icon: 'pi pi-home' },
     Schedule: { label: 'Agenda', icon: 'pi pi-calendar' },
-    History: { label: 'History', icon: 'pi pi-history' },
+    History: { label: 'Histórico', icon: 'pi pi-history' },
     Settings: { label: 'Configurações', icon: 'pi pi-cog' }
   }
 
@@ -34,14 +34,15 @@
 <template>
   <aside class="app-sidebar" :class="{ 'sidebar-collapsed': isCollapsed }">
     <div class="sidebar-header">
-      <i class="pi pi-desktop"></i>
-      <span v-show="!isCollapsed">Reservas Chromebooks</span>
+      <i class="pi pi-desktop header-icon" title="Reservas Chromebooks"></i>
+      <span v-show="!isCollapsed" class="header-label">Reserva de Chromebooks</span>
     </div>
     <nav class="sidebar-content">
       <RouterLink v-for="item in menuItems"
                   :key="item.route"
                   :to="{ name: item.route }"
                   class="nav-link"
+                  :class="{ 'nav-link-collapsed': isCollapsed }"
                   active-class="active-link"
                   :title="isCollapsed ? item.label : undefined">
         <i :class="item.icon" class="nav-icon"></i>
@@ -54,6 +55,9 @@
               text
               rounded
               aria-label="Toggle Sidebar"
+              :pt="{
+                icon: { style: 'font-size: 0.75rem;' }
+              }"
               @click="toggleCollapse">
       </Button>
     </div>
@@ -62,7 +66,7 @@
 
 <style scoped>
   .app-sidebar {
-      width: 260px;
+      width: 240px;
       background-color: var(--p-surface-0);
       border-right: 1px solid var(--p-surface-200);
       display: flex;
@@ -72,17 +76,26 @@
   }
 
     .app-sidebar.sidebar-collapsed {
-        width: 80px;
+        width: 64px;
     }
 
   .sidebar-header {
-      height: 70px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0 1rem;
       border-bottom: 1px solid var(--p-surface-100);
-      margin-bottom: 1rem;
-      overflow: hidden;
+      gap: 0.75rem;
+  }
+
+  .header-icon {
+      font-size: 1.25rem;
+  }
+
+  .header-label {
+      font-size: var(--font-base);
+      font-weight: 500;
   }
 
   .sidebar-content {
@@ -90,7 +103,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      padding: 0 0.75rem;
+      padding: 1rem 0.5rem;
       overflow-y: auto;
       overflow-x: hidden;
   }
@@ -99,20 +112,28 @@
       display: flex;
       align-items: center;
       padding: 0.75rem 1rem;
-      border-radius: 6px;
+      border-radius: 8px;
       text-decoration: none;
       transition: background-color 0.2s, color 0.2s;
       white-space: nowrap;
       outline: none;
+      gap: 0.75rem;
+      color: var(--p-surface-600);
   }
 
     .nav-link:hover {
         background-color: var(--p-surface-100);
     }
 
+  .nav-link-collapsed {
+      padding-left: 0;
+      padding-right: 0;
+      justify-content: center;
+  }
+
   .active-link {
       background-color: var(--p-primary-50);
-      color: var(--p-primary-600);
+      color: var(--p-primary-700);
       font-weight: 600;
   }
 
@@ -124,7 +145,7 @@
   }
 
   .nav-label {
-      margin-left: 0.75rem;
+      font-size: var(--font-base);
       transition: opacity 0.2s;
   }
 
@@ -133,5 +154,9 @@
       border-top: 1px solid var(--p-surface-100);
       display: flex;
       justify-content: center;
+  }
+
+  .collapse-icon {
+      font-size: 1rem !important;
   }
 </style>

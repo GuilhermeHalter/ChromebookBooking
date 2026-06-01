@@ -1,0 +1,8 @@
+@import 'font.css';
+
+:root {
+    --font-base: 0.875rem;
+    --font-sm: 0.75rem;
+}
+
+

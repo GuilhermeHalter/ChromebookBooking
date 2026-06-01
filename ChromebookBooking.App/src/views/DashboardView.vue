@@ -12,7 +12,6 @@
 </script>
 
 <template>
-  <a v-if="authStore.user" @click="authStore.logout">Sair</a>
   {{ cabinetStore.cabinets }}
 </template>
 
