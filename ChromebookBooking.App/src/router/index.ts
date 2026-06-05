@@ -64,6 +64,9 @@ export const router = createRouter({
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
 
+  console.log('user', authStore.user);
+  console.log('profile', authStore.profile);
+
   const isAuthenticated = !!authStore.user
   const isAuthorized = !!authStore.profile
   const accessibleModules = authStore.profile?.modules || []
