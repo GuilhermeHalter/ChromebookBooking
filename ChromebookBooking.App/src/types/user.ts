@@ -17,4 +17,4 @@ export interface LoggedUser {
 
 export type UserRole = 'Admin' | 'Teacher'
 
-export type UserModule = 'Dashboard' | 'Schedule' | 'History' | 'Settings'
+export type UserModule = 'Dashboard' | 'Schedule' | 'History' | 'Settings' | 'AccessDenied'
