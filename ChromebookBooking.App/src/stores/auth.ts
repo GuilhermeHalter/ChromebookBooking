@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { Session, User } from '@supabase/supabase-js'
 import AuthService from '../services/AuthService'
 import UserService from '../services/UserService'
-import type { LoggedUser } from '../types/user'
+import type { LoggedUser, UserModule } from '../types/user'
 import { router } from '../router'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -53,6 +53,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  function getDefaultModule(): UserModule {
+    const modules = profile.value?.modules || []
+    if (modules.includes('Dashboard')) {
+      return 'Dashboard'
+    }
+    if (modules.includes('Schedule')) {
+      return 'Schedule'
+    }
+    return 'AccessDenied'
+  }
+
+  function canAccessModule(module: UserModule): boolean {
+    const modules = profile.value?.modules || []
+    return modules.includes(module)
+  }
+
   return {
     user,
     session,
@@ -62,6 +78,8 @@ export const useAuthStore = defineStore('auth', () => {
     loginWithGoogle,
     logout,
     getToken,
-    getLoggedUser
+    getLoggedUser,
+    getDefaultModule,
+    canAccessModule
   }
 })
