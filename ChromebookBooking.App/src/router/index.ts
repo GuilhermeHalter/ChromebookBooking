@@ -15,7 +15,9 @@ const routes: RouteRecordRaw[] = [
         redirect: () => {
           const authStore = useAuthStore()
           const accessibleModules = authStore.profile?.modules || []
-          if (accessibleModules.length === 0) return { name: 'AccessDenied' }
+          console.log('modules', accessibleModules)
+          //if (accessibleModules.length === 0) return { name: 'AccessDenied' }
+          if (accessibleModules.length === 0) return { name: 'Login' }
           if (accessibleModules.includes('Dashboard')) {
             return { name: 'Dashboard' }
           }
