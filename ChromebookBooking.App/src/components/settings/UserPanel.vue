@@ -20,8 +20,8 @@
 <template>
   <div class="users-container">
     <DataTable :value="userStore.users">
-      <Column v-for="col in columns"
-              :key="col.field"
+      <Column v-for="(col, index) in columns"
+              :key="index"
               :field="col.field"
               :header="col.header">
       </Column>
