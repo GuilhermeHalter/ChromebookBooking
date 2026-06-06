@@ -30,7 +30,7 @@
       <h1 class="view-title">Configurações</h1>
       <p class="view-subtitle">Gerencie usuários, turmas e gabinetes</p>
     </div>
-    <Tabs v-model:value="activePanel" class="tabs-container">
+    <Tabs :value="activePanel" class="tabs-container">
       <TabList>
         <Tab v-for="panel in settingPanels" :key="panel.key" :value="panel.key">
           {{ panel.title }}
